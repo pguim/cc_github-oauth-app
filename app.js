@@ -52,6 +52,14 @@ app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 
 /*
+ * ensureAuthenticated Callback Function
+*/
+const ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) return next()
+  res.redirect('/login')
+}
+
+/*
  * Routes
 */
 
@@ -59,7 +67,7 @@ app.get('/', (req, res) => {
   res.render('index', { user: req.user });
 })
 
-app.get('/account', (req, res) => {
+app.get('/account', ensureAuthenticated, (req, res) => {
   res.render('account', { user: req.user });
 });
 
@@ -72,13 +80,12 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
+app.get('/auth/github', passport.authenticate('github', { scope: ['user'] }))
+app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }))
+
+
 /*
  * Listener
 */
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-/*
- * ensureAuthenticated Callback Function
-*/
-
