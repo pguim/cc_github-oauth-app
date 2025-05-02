@@ -75,9 +75,11 @@ app.get('/login', (req, res) => {
   res.render('login', { user: req.user });
 })
 
-app.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
+app.get('/logout', (req, res, next) => {
+  req.logout(err => {
+    if (err) { return next(err) }
+    res.redirect('/');
+  });
 });
 
 app.get('/auth/github', passport.authenticate('github', { scope: ['user'] }))
