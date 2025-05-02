@@ -27,7 +27,12 @@ passport.use(new GitHubStrategy({
   "clientSecret": GITHUB_CLIENT_SECRET,
   "callbackURL": "http://localhost:3000/auth/github/callback"
 }, (accessToken, refreshToken, profile, done) => { done(null, profile) }))
-
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+passport.deserializeUser((user, done) => {
+  done(null, user)
+})
 /*
  *  Express Project Setup
 */
